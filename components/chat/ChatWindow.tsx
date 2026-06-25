@@ -1,12 +1,13 @@
 "use client";
 
 import { useGuideStore } from "@/stores/guide-store";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Bot, User, Volume2 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Bot, User, Volume2, Send } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const QUICK_QUESTIONS = [
   "镇馆之宝有哪些？",
@@ -16,15 +17,47 @@ const QUICK_QUESTIONS = [
   "吴地遗珍讲的是什么？",
 ];
 
-export function ChatWindow() {
-  const { messages, isStreaming, ttsEnabled } = useGuideStore();
+interface ChatWindowProps {
+  /** 外部传入的发送处理器（如不传，则由 ChatWindow 内部自己处理） */
+  onSend?: (text: string) => void;
+}
+
+export function ChatWindow({ onSend }: ChatWindowProps) {
+  const { messages, isStreaming, ttsEnabled, addMessage, setIsStreaming } = useGuideStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isStreaming]);
+
+  const handleSend = () => {
+    const text = input.trim();
+    if (!text || isStreaming) return;
+    setInput("");
+    // 消息先入 store，立即显示
+    addMessage({ role: "user", content: text });
+    // 再触发 API（如有回调）
+    onSend?.(text);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleQuickQuestion = (text: string) => {
+    if (isStreaming) return;
+    if (onSend) {
+      onSend(text);
+    } else {
+      addMessage({ role: "user", content: text });
+    }
+  };
 
   const handleTTS = async (text: string) => {
     try {
@@ -45,35 +78,37 @@ export function ChatWindow() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden bg-white">
       {/* Header */}
       <div
-        className="flex items-center gap-3 px-4 py-3 border-b bg-white"
-        style={{ height: 64 }}
+        className="flex items-center gap-3 px-4 py-3 border-b shrink-0"
+        style={{ borderColor: "#F0EDE8" }}
       >
-        <Avatar className="shrink-0" style={{ backgroundColor: "var(--szm-blue-pale, #E8F0ED)" }}>
-          <AvatarFallback style={{ backgroundColor: "var(--szm-blue, #6B9E8C)", color: "#fff" }}>
-            <Bot size={20} />
+        <Avatar style={{ width: 36, height: 36, backgroundColor: "#E8F0ED" }}>
+          <AvatarFallback
+            style={{ backgroundColor: "#6B9E8C", color: "#fff" }}
+          >
+            <Bot size={18} />
           </AvatarFallback>
         </Avatar>
         <div>
           <h2
-            className="text-lg"
-            style={{ fontFamily: "var(--font-serif, 'Noto Serif SC', serif)", fontWeight: 600 }}
+            className="text-base"
+            style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600, lineHeight: 1.2 }}
           >
             苏博 AI 导览
           </h2>
-          <p className="text-xs" style={{ color: "var(--szm-blue, #6B9E8C)" }}>
+          <p className="text-xs" style={{ color: "#6B9E8C", lineHeight: 1.2 }}>
             随时为你讲解苏州博物馆
           </p>
         </div>
         <div className="ml-auto">
           <Badge
-            variant="outline"
             style={{
-              borderColor: "var(--szm-blue, #6B9E8C)",
-              color: "var(--szm-blue, #6B9E8C)",
-              fontSize: 12,
+              borderColor: "#6B9E8C",
+              color: "#6B9E8C",
+              fontSize: 11,
+              padding: "2px 8px",
             }}
           >
             AI 在线
@@ -81,101 +116,36 @@ export function ChatWindow() {
         </div>
       </div>
 
-      {/* Messages */}
-      <ScrollArea className="flex-1" ref={scrollRef} style={{ backgroundColor: "var(--szm-light, #F7F5F0)" }}>
-        <div className="flex flex-col gap-3 p-4" style={{ minHeight: "100%" }}>
+      {/* Messages — scrollable */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto"
+        style={{ backgroundColor: "#F7F5F0" }}
+      >
+        <div className="flex flex-col gap-3 p-4">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div
-                className="mb-6 text-4xl"
-                style={{ fontFamily: "var(--font-serif, serif)" }}
-              >
-                🏛️
-              </div>
+            <div className="flex flex-col items-center py-10 text-center">
+              <div className="text-3xl mb-4">🏛️</div>
               <h3
-                className="mb-2 text-xl"
-                style={{ fontFamily: "var(--font-serif, 'Noto Serif SC', serif)", fontWeight: 600 }}
+                className="mb-2 text-lg"
+                style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600, color: "#2C2C2C" }}
               >
                 欢迎来到苏州博物馆
               </h3>
-              <p className="mb-6 text-sm" style={{ color: "#999", maxWidth: 280 }}>
+              <p className="mb-5 text-sm" style={{ color: "#999", maxWidth: 280 }}>
                 我是你的 AI 导览员，有什么想了解的尽管问我吧！
               </p>
               <div className="flex flex-wrap justify-center gap-2">
                 {QUICK_QUESTIONS.map((q) => (
                   <button
                     key={q}
-                    onClick={() => {
-                      useGuideStore.getState().addMessage({ role: "user", content: q });
-                      useGuideStore.getState().setIsStreaming(true);
-                      fetch("/api/chat", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          messages: [
-                            ...useGuideStore.getState().messages.map((m) => ({
-                              role: m.role,
-                              content: m.content,
-                            })),
-                            { role: "user", content: q },
-                          ],
-                        }),
-                      })
-                        .then((r) => r.body)
-                        .then((body) => {
-                          if (!body) throw new Error("No body");
-                          const reader = body.getReader();
-                          const decoder = new TextDecoder();
-                          let buffer = "";
-
-                          const process = () => {
-                            reader.read().then(({ done, value }) => {
-                              if (done) {
-                                useGuideStore.getState().setIsStreaming(false);
-                                return;
-                              }
-                              buffer += decoder.decode(value, { stream: true });
-                              const lines = buffer.split("\n");
-                              buffer = lines.pop() || "";
-
-                              for (const line of lines) {
-                                if (line.startsWith("data: ")) {
-                                  const data = line.slice(6);
-                                  if (data === "[DONE]") {
-                                    useGuideStore.getState().setIsStreaming(false);
-                                    return;
-                                  }
-                                  try {
-                                    const parsed = JSON.parse(data);
-                                    const content = parsed.choices?.[0]?.delta?.content;
-                                    if (content) {
-                                      const state = useGuideStore.getState();
-                                      const lastMsg = state.messages[state.messages.length - 1];
-                                      if (lastMsg?.role === "assistant" && !lastMsg.content.endsWith("\n")) {
-                                        useGuideStore.getState().messages[state.messages.length - 1].content += content;
-                                      } else {
-                                        useGuideStore.getState().addMessage({ role: "assistant", content });
-                                      }
-                                    }
-                                  } catch {}
-                                }
-                              }
-                              process();
-                            });
-                          };
-                          process();
-                        })
-                        .catch((err) => {
-                          console.error("[chat] error:", err);
-                          useGuideStore.getState().setIsStreaming(false);
-                        });
-                    }}
-                    className="px-3 py-1.5 text-sm transition-colors"
+                    onClick={() => handleQuickQuestion(q)}
+                    className="px-3 py-1.5 text-sm"
                     style={{
-                      borderRadius: "var(--szm-radius-full, 9999px)",
-                      border: "1px solid var(--szm-gray, #E8E4DC)",
+                      borderRadius: 999,
+                      border: "1px solid #E8E4DC",
                       backgroundColor: "#fff",
-                      color: "var(--szm-dark, #2C2C2C)",
+                      color: "#444",
                     }}
                   >
                     {q}
@@ -188,53 +158,46 @@ export function ChatWindow() {
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={cn(
-                "flex gap-2",
-                msg.role === "user" ? "flex-row-reverse" : "flex-row"
-              )}
+              className={cn("flex gap-2", msg.role === "user" ? "flex-row-reverse" : "flex-row")}
             >
-              <Avatar className="shrink-0 mt-1" style={{ width: 32, height: 32 }}>
+              <Avatar style={{ width: 32, height: 32, flexShrink: 0 }}>
                 <AvatarFallback
                   style={{
-                    backgroundColor:
-                      msg.role === "assistant"
-                        ? "var(--szm-blue, #6B9E8C)"
-                        : "var(--szm-gray, #E8E4DC)",
-                    color: msg.role === "assistant" ? "#fff" : "var(--szm-dark, #2C2C2C)",
-                    width: 32,
-                    height: 32,
-                    fontSize: 14,
+                    backgroundColor: msg.role === "assistant" ? "#6B9E8C" : "#E8E4DC",
+                    color: msg.role === "assistant" ? "#fff" : "#2C2C2C",
+                    fontSize: 13,
                   }}
                 >
-                  {msg.role === "assistant" ? <Bot size={16} /> : <User size={16} />}
+                  {msg.role === "assistant" ? <Bot size={14} /> : <User size={14} />}
                 </AvatarFallback>
               </Avatar>
 
               <div
-                className={cn(
-                  "ai-bubble max-w-[75%]",
-                  msg.role === "user" ? "user-bubble" : "ai-bubble"
-                )}
+                className="max-w-[75%]"
                 style={
                   msg.role === "user"
                     ? {
-                        backgroundColor: "var(--szm-gray, #E8E4DC)",
-                        borderRadius: "var(--szm-radius-lg, 12px) var(--szm-radius-xl, 16px) var(--szm-radius-sm, 4px) var(--szm-radius-lg, 12px)",
+                        backgroundColor: "#E8E4DC",
+                        borderRadius: "12px 16px 4px 12px",
+                        padding: "10px 12px",
                       }
                     : {
-                        backgroundColor: "var(--szm-blue-pale, #E8F0ED)",
-                        borderRadius: "var(--szm-radius-xl, 16px) var(--szm-radius-lg, 12px) var(--szm-radius-lg, 12px) var(--szm-radius-sm, 4px)",
+                        backgroundColor: "#E8F0ED",
+                        borderRadius: "16px 12px 12px 4px",
+                        padding: "10px 12px",
                       }
                 }
               >
-                <p style={{ lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{msg.content}</p>
+                <p style={{ lineHeight: 1.7, whiteSpace: "pre-wrap", fontSize: 14 }}>
+                  {msg.content}
+                </p>
                 {msg.role === "assistant" && ttsEnabled && (
                   <button
                     onClick={() => handleTTS(msg.content)}
-                    className="flex items-center gap-1 mt-2 text-xs transition-opacity opacity-60 hover:opacity-100"
-                    style={{ color: "var(--szm-blue, #6B9E8C)" }}
+                    className="flex items-center gap-1 mt-1.5 text-xs opacity-60 hover:opacity-100 transition-opacity"
+                    style={{ color: "#6B9E8C" }}
                   >
-                    <Volume2 size={12} />
+                    <Volume2 size={11} />
                     朗读
                   </button>
                 )}
@@ -244,36 +207,61 @@ export function ChatWindow() {
 
           {isStreaming && (
             <div className="flex gap-2">
-              <Avatar className="shrink-0 mt-1" style={{ width: 32, height: 32 }}>
+              <Avatar style={{ width: 32, height: 32, flexShrink: 0 }}>
                 <AvatarFallback
-                  style={{
-                    backgroundColor: "var(--szm-blue, #6B9E8C)",
-                    color: "#fff",
-                    width: 32,
-                    height: 32,
-                    fontSize: 14,
-                  }}
+                  style={{ backgroundColor: "#6B9E8C", color: "#fff", fontSize: 13 }}
                 >
-                  <Bot size={16} />
+                  <Bot size={14} />
                 </AvatarFallback>
               </Avatar>
               <div
-                className="ai-bubble"
                 style={{
-                  backgroundColor: "var(--szm-blue-pale, #E8F0ED)",
-                  borderRadius: "var(--szm-radius-xl, 16px) var(--szm-radius-lg, 12px) var(--szm-radius-lg, 12px) var(--szm-radius-sm, 4px)",
+                  backgroundColor: "#E8F0ED",
+                  borderRadius: "16px 12px 12px 4px",
+                  padding: "10px 12px",
                 }}
               >
-                <span className="inline-flex gap-1">
-                  <span className="animate-bounce" style={{ animationDelay: "0ms" }}>●</span>
-                  <span className="animate-bounce" style={{ animationDelay: "150ms" }}>●</span>
-                  <span className="animate-bounce" style={{ animationDelay: "300ms" }}>●</span>
+                <span className="flex gap-0.5">
+                  <span className="animate-bounce" style={{ animationDelay: "0ms", color: "#6B9E8C" }}>●</span>
+                  <span className="animate-bounce" style={{ animationDelay: "150ms", color: "#6B9E8C" }}>●</span>
+                  <span className="animate-bounce" style={{ animationDelay: "300ms", color: "#6B9E8C" }}>●</span>
                 </span>
               </div>
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
+
+      {/* Input — always at bottom */}
+      <div
+        className="flex items-center gap-2 px-3 py-2.5 border-t shrink-0"
+        style={{ borderColor: "#F0EDE8", backgroundColor: "#fff" }}
+      >
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="问我关于苏州博物馆的一切..."
+          disabled={isStreaming}
+          className="flex-1"
+          style={{ borderRadius: 20 }}
+        />
+        <Button
+          onClick={handleSend}
+          disabled={!input.trim() || isStreaming}
+          size="icon"
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: "50%",
+            backgroundColor: "#6B9E8C",
+            border: "none",
+            flexShrink: 0,
+          }}
+        >
+          <Send size={15} color="#fff" />
+        </Button>
+      </div>
     </div>
   );
 }

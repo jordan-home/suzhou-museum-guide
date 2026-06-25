@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ChatWindow } from "@/components/chat/ChatWindow";
-import { ChatInput } from "@/components/chat/ChatInput";
 import { MessageCircle, MapPin, Calendar, Building2, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
@@ -41,7 +40,7 @@ const HALLS = [
   },
 ];
 
-async function sendChatMessage(text: string) {
+async function triggerChat() {
   const allMessages = useGuideStore.getState().messages.map((m) => ({
     role: m.role,
     content: m.content,
@@ -98,20 +97,17 @@ async function sendChatMessage(text: string) {
 }
 
 export default function HomePage() {
-  const { setActiveTab, addMessage, setIsStreaming } = useGuideStore();
+  const { setActiveTab } = useGuideStore();
   const [chatOpen, setChatOpen] = useState(false);
 
   const handleSendMessage = async (text: string) => {
-    addMessage({ role: "user", content: text });
-    setIsStreaming(true);
-    setChatOpen(true);
-
+    useGuideStore.getState().setIsStreaming(true);
     try {
-      await sendChatMessage(text);
+      await triggerChat();
     } catch (err) {
       console.error("[home] chat error:", err);
-      setIsStreaming(false);
-      addMessage({
+      useGuideStore.getState().setIsStreaming(false);
+      useGuideStore.getState().addMessage({
         role: "assistant",
         content: "抱歉，网络出了点小问题，请稍后再试。",
       });
@@ -125,8 +121,8 @@ export default function HomePage() {
     >
       {/* Header */}
       <header
-        className="flex items-center justify-between px-4 bg-white shadow-sm"
-        style={{ height: 60, flexShrink: 0, zIndex: 10 }}
+        className="flex items-center justify-between px-4 bg-white shadow-sm shrink-0"
+        style={{ height: 60, zIndex: 10 }}
       >
         <div>
           <h1
@@ -141,18 +137,13 @@ export default function HomePage() {
         </div>
         <Badge
           className="text-xs shrink-0"
-          style={{
-            backgroundColor: "#E8F0ED",
-            color: "#6B9E8C",
-            border: "none",
-            padding: "4px 8px",
-          }}
+          style={{ backgroundColor: "#E8F0ED", color: "#6B9E8C", border: "none", padding: "4px 8px" }}
         >
           周二至周日 9:00-17:00
         </Badge>
       </header>
 
-      {/* Hero — 简洁设计，不依赖负margin */}
+      {/* Hero */}
       <div
         className="flex flex-col items-center justify-center px-6"
         style={{
@@ -173,7 +164,7 @@ export default function HomePage() {
           贝聿铭设计 · 2006年落成 · 太平天国忠王府遗址
         </p>
 
-        {/* Info Pills — 内嵌在 Hero 底部 */}
+        {/* Info Pills */}
         <div className="flex gap-3 mt-4 w-full max-w-sm">
           <div className="flex-1 flex items-center gap-1.5 bg-white bg-opacity-20 rounded-full px-3 py-1.5">
             <MapPin size={12} className="text-white opacity-80 shrink-0" />
@@ -188,10 +179,7 @@ export default function HomePage() {
 
       {/* Halls */}
       <div className="px-4 mt-5">
-        <h3
-          className="mb-3 text-base"
-          style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600 }}
-        >
+        <h3 className="mb-3 text-base" style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600 }}>
           展厅导览
         </h3>
         <div className="flex flex-col gap-2.5">
@@ -199,26 +187,16 @@ export default function HomePage() {
             <Card
               key={hall.id}
               className="flex items-center gap-3 p-3.5 cursor-pointer transition-shadow hover:shadow-sm"
-              style={{
-                borderRadius: 12,
-                border: "1px solid #E8E4DC",
-                backgroundColor: "#fff",
-              }}
+              style={{ borderRadius: 12, border: "1px solid #E8E4DC", backgroundColor: "#fff" }}
               onClick={() => setActiveTab("map")}
             >
               <span className="text-2xl shrink-0">{hall.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h4
-                    className="text-sm font-semibold"
-                    style={{ fontFamily: "'Noto Serif SC', serif", lineHeight: 1.3 }}
-                  >
+                  <h4 className="text-sm font-semibold" style={{ fontFamily: "'Noto Serif SC', serif", lineHeight: 1.3 }}>
                     {hall.name}
                   </h4>
-                  <span
-                    className="text-xs"
-                    style={{ color: "#6B9E8C" }}
-                  >
+                  <span className="text-xs" style={{ color: "#6B9E8C" }}>
                     {hall.subtitle}
                   </span>
                 </div>
@@ -234,10 +212,7 @@ export default function HomePage() {
 
       {/* Quick Actions */}
       <div className="px-4 mt-5 mb-4">
-        <h3
-          className="mb-3 text-base"
-          style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600 }}
-        >
+        <h3 className="mb-3 text-base" style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600 }}>
           快捷服务
         </h3>
         <div className="grid grid-cols-2 gap-2.5">
@@ -289,16 +264,11 @@ export default function HomePage() {
         </SheetTrigger>
         <SheetContent
           side="right"
-          className="p-0 flex flex-col"
+          className="p-0"
           style={{ width: "100%", maxWidth: "100%", height: "100%", borderRadius: 0 }}
         >
-          <div className="flex flex-col" style={{ height: "100%" }}>
-            <ChatWindow />
-            <ChatInput
-              onSend={handleSendMessage}
-              disabled={useGuideStore.getState().isStreaming}
-            />
-          </div>
+          {/* ChatWindow 内置输入框，不需要额外包裹 */}
+          <ChatWindow onSend={handleSendMessage} />
         </SheetContent>
       </Sheet>
 
