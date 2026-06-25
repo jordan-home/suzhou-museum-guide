@@ -127,21 +127,27 @@ export default function MapPage() {
       </div>
 
       {/* AI 助手入口 */}
-      <div className="absolute bottom-20 right-4 z-40">
+      <div className="fixed bottom-20 right-4 z-40">
         <Sheet open={chatOpen} onOpenChange={setChatOpen}>
           <SheetTrigger
             render={
-              <Button
-                className="rounded-full shadow-lg w-12 h-12 flex items-center justify-center"
+              <button
+                className="rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95"
                 style={{
-                  backgroundColor: "var(--szm-blue)",
+                  width: 48,
+                  height: 48,
+                  backgroundColor: "#6B9E8C",
                   borderRadius: "50%",
+                  border: "none",
+                  cursor: "pointer",
+                  zIndex: 40,
                 }}
-              >
-                <MessageCircle size={22} color="#fff" />
-              </Button>
+                aria-label="打开 AI 导览"
+              />
             }
-          />
+          >
+            <MessageCircle size={22} color="#fff" />
+          </SheetTrigger>
           <SheetContent
             side="right"
             className="p-0 flex flex-col"

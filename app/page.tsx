@@ -1,14 +1,13 @@
 "use client";
 
 import { useGuideStore } from "@/stores/guide-store";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ChatWindow } from "@/components/chat/ChatWindow";
 import { ChatInput } from "@/components/chat/ChatInput";
-import { MessageCircle, MapPin, Clock, Calendar, Building2 } from "lucide-react";
+import { MessageCircle, MapPin, Calendar, Building2, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 const HALLS = [
@@ -42,6 +41,62 @@ const HALLS = [
   },
 ];
 
+async function sendChatMessage(text: string) {
+  const allMessages = useGuideStore.getState().messages.map((m) => ({
+    role: m.role,
+    content: m.content,
+  }));
+
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: allMessages }),
+  });
+
+  if (!res.body) throw new Error("No response body");
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  const processStream = () => {
+    reader.read().then(({ done, value }) => {
+      if (done) {
+        useGuideStore.getState().setIsStreaming(false);
+        return;
+      }
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          const data = line.slice(6);
+          if (data === "[DONE]") {
+            useGuideStore.getState().setIsStreaming(false);
+            return;
+          }
+          try {
+            const parsed = JSON.parse(data);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              const state = useGuideStore.getState();
+              const lastMsg = state.messages[state.messages.length - 1];
+              if (lastMsg?.role === "assistant" && !lastMsg.content.endsWith("\n")) {
+                state.messages[state.messages.length - 1].content += content;
+              } else {
+                state.addMessage({ role: "assistant", content });
+              }
+            }
+          } catch {}
+        }
+      }
+      processStream();
+    });
+  };
+  processStream();
+}
+
 export default function HomePage() {
   const { setActiveTab, addMessage, setIsStreaming } = useGuideStore();
   const [chatOpen, setChatOpen] = useState(false);
@@ -51,60 +106,8 @@ export default function HomePage() {
     setIsStreaming(true);
     setChatOpen(true);
 
-    const allMessages = useGuideStore.getState().messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    }));
-
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: allMessages }),
-      });
-
-      if (!res.body) throw new Error("No response body");
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      const processStream = () => {
-        reader.read().then(({ done, value }) => {
-          if (done) {
-            setIsStreaming(false);
-            return;
-          }
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6);
-              if (data === "[DONE]") {
-                setIsStreaming(false);
-                return;
-              }
-              try {
-                const parsed = JSON.parse(data);
-                const content = parsed.choices?.[0]?.delta?.content;
-                if (content) {
-                  const state = useGuideStore.getState();
-                  const lastMsg = state.messages[state.messages.length - 1];
-                  if (lastMsg?.role === "assistant" && !lastMsg.content.endsWith("\n")) {
-                    state.messages[state.messages.length - 1].content += content;
-                  } else {
-                    addMessage({ role: "assistant", content });
-                  }
-                }
-              } catch {}
-            }
-          }
-          processStream();
-        });
-      };
-      processStream();
+      await sendChatMessage(text);
     } catch (err) {
       console.error("[home] chat error:", err);
       setIsStreaming(false);
@@ -118,118 +121,147 @@ export default function HomePage() {
   return (
     <div
       className="flex flex-col min-h-screen"
-      style={{ backgroundColor: "var(--szm-light, #F7F5F0)", paddingBottom: 64 }}
+      style={{ backgroundColor: "#F7F5F0", paddingBottom: 64 }}
     >
       {/* Header */}
       <header
-        className="flex items-center justify-between px-4 py-4 bg-white shadow-sm"
-        style={{ height: 64 }}
+        className="flex items-center justify-between px-4 bg-white shadow-sm"
+        style={{ height: 60, flexShrink: 0, zIndex: 10 }}
       >
         <div>
           <h1
-            className="text-xl"
-            style={{ fontFamily: "var(--font-serif, 'Noto Serif SC', serif)", fontWeight: 700 }}
+            className="text-lg"
+            style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 700, lineHeight: 1.2 }}
           >
             苏州博物馆
           </h1>
-          <p className="text-xs" style={{ color: "#999" }}>
-            Suzhou Museum · 贝聿铭设计
+          <p className="text-xs" style={{ color: "#999", lineHeight: 1.2 }}>
+            Suzhou Museum
           </p>
         </div>
         <Badge
+          className="text-xs shrink-0"
           style={{
-            backgroundColor: "var(--szm-blue-pale, #E8F0ED)",
-            color: "var(--szm-blue, #6B9E8C)",
+            backgroundColor: "#E8F0ED",
+            color: "#6B9E8C",
             border: "none",
+            padding: "4px 8px",
           }}
         >
-          <Clock size={12} className="mr-1" />
           周二至周日 9:00-17:00
         </Badge>
       </header>
 
-      {/* Hero */}
+      {/* Hero — 简洁设计，不依赖负margin */}
       <div
-        className="relative flex flex-col items-center justify-center py-12 text-center text-white"
+        className="flex flex-col items-center justify-center px-6"
         style={{
-          background: "linear-gradient(135deg, #6B9E8C 0%, #4A7A6C 100%)",
-          minHeight: 200,
+          background: "linear-gradient(160deg, #6B9E8C 0%, #4A7A6C 100%)",
+          minHeight: 160,
+          paddingTop: 24,
+          paddingBottom: 24,
         }}
       >
-        <Building2 size={48} className="mb-3 opacity-80" />
+        <Building2 size={40} className="mb-3 text-white opacity-80" />
         <h2
-          className="mb-2 text-2xl"
-          style={{ fontFamily: "var(--font-serif, 'Noto Serif SC', serif)", fontWeight: 600 }}
+          className="mb-2 text-xl text-white text-center"
+          style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600, lineHeight: 1.3 }}
         >
           "中而新，苏而新"
         </h2>
-        <p className="text-sm opacity-80 max-w-xs">
+        <p className="text-xs text-white opacity-75 text-center leading-relaxed">
           贝聿铭设计 · 2006年落成 · 太平天国忠王府遗址
         </p>
-      </div>
 
-      {/* Info Cards */}
-      <div className="grid grid-cols-2 gap-3 px-4 -mt-6">
-        <Card
-          className="p-3"
-          style={{ borderRadius: "var(--szm-radius-lg, 12px)", border: "none", boxShadow: "var(--szm-shadow-md)" }}
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <MapPin size={16} style={{ color: "var(--szm-blue, #6B9E8C)" }} />
-            <span className="text-xs font-medium">地址</span>
+        {/* Info Pills — 内嵌在 Hero 底部 */}
+        <div className="flex gap-3 mt-4 w-full max-w-sm">
+          <div className="flex-1 flex items-center gap-1.5 bg-white bg-opacity-20 rounded-full px-3 py-1.5">
+            <MapPin size={12} className="text-white opacity-80 shrink-0" />
+            <span className="text-xs text-white opacity-90 truncate">姑苏区东北街204号</span>
           </div>
-          <p className="text-xs" style={{ color: "#666" }}>
-            姑苏区东北街204号
-          </p>
-        </Card>
-        <Card
-          className="p-3"
-          style={{ borderRadius: "var(--szm-radius-lg, 12px)", border: "none", boxShadow: "var(--szm-shadow-md)" }}
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <Calendar size={16} style={{ color: "var(--szm-blue, #6B9E8C)" }} />
-            <span className="text-xs font-medium">当前展览</span>
+          <div className="flex-1 flex items-center gap-1.5 bg-white bg-opacity-20 rounded-full px-3 py-1.5">
+            <Calendar size={12} className="text-white opacity-80 shrink-0" />
+            <span className="text-xs text-white opacity-90 truncate">江南造·团扇艺术展</span>
           </div>
-          <p className="text-xs" style={{ color: "#666" }}>
-            江南造·蔡念群团扇艺术展
-          </p>
-        </Card>
+        </div>
       </div>
 
       {/* Halls */}
-      <div className="px-4 mt-6">
+      <div className="px-4 mt-5">
         <h3
-          className="mb-3 text-lg"
-          style={{ fontFamily: "var(--font-serif, 'Noto Serif SC', serif)", fontWeight: 600 }}
+          className="mb-3 text-base"
+          style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600 }}
         >
           展厅导览
         </h3>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {HALLS.map((hall) => (
             <Card
               key={hall.id}
-              className="p-4 transition-shadow cursor-pointer hover:shadow-md"
-              style={{ borderRadius: "var(--szm-radius-lg, 12px)", border: "1px solid var(--szm-gray)" }}
+              className="flex items-center gap-3 p-3.5 cursor-pointer transition-shadow hover:shadow-sm"
+              style={{
+                borderRadius: 12,
+                border: "1px solid #E8E4DC",
+                backgroundColor: "#fff",
+              }}
               onClick={() => setActiveTab("map")}
             >
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">{hall.icon}</span>
-                <div className="flex-1 min-w-0">
+              <span className="text-2xl shrink-0">{hall.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
                   <h4
-                    className="font-semibold"
-                    style={{ fontFamily: "var(--font-serif, 'Noto Serif SC', serif)" }}
+                    className="text-sm font-semibold"
+                    style={{ fontFamily: "'Noto Serif SC', serif", lineHeight: 1.3 }}
                   >
                     {hall.name}
                   </h4>
-                  <p className="text-xs mb-1" style={{ color: "var(--szm-blue, #6B9E8C)" }}>
+                  <span
+                    className="text-xs"
+                    style={{ color: "#6B9E8C" }}
+                  >
                     {hall.subtitle}
-                  </p>
-                  <p className="text-xs" style={{ color: "#888" }}>
-                    {hall.desc}
-                  </p>
+                  </span>
                 </div>
+                <p className="text-xs mt-0.5" style={{ color: "#888", lineHeight: 1.4 }}>
+                  {hall.desc}
+                </p>
               </div>
+              <ChevronRight size={16} className="text-gray-300 shrink-0" />
             </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="px-4 mt-5 mb-4">
+        <h3
+          className="mb-3 text-base"
+          style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 600 }}
+        >
+          快捷服务
+        </h3>
+        <div className="grid grid-cols-2 gap-2.5">
+          {[
+            { label: "参观预约", sub: "免费预约入馆", icon: "📅" },
+            { label: "语音讲解", sub: "AI 实时讲解", icon: "🎧" },
+            { label: "镇馆之宝", sub: "五大镇馆之宝", icon: "✨" },
+            { label: "无障碍", sub: "轮椅/婴儿车", icon: "♿" },
+          ].map((item) => (
+            <button
+              key={item.label}
+              className="flex items-center gap-2.5 p-3 bg-white rounded-xl text-left"
+              style={{ border: "1px solid #E8E4DC", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+            >
+              <span className="text-xl">{item.icon}</span>
+              <div>
+                <p className="text-sm font-medium" style={{ color: "#2C2C2C", lineHeight: 1.3 }}>
+                  {item.label}
+                </p>
+                <p className="text-xs" style={{ color: "#999", lineHeight: 1.3 }}>
+                  {item.sub}
+                </p>
+              </div>
+            </button>
           ))}
         </div>
       </div>
@@ -241,29 +273,31 @@ export default function HomePage() {
             <button
               className="fixed bottom-20 right-4 flex items-center justify-center shadow-lg transition-transform active:scale-95"
               style={{
-                width: 56,
-                height: 56,
+                width: 52,
+                height: 52,
                 borderRadius: "50%",
-                backgroundColor: "var(--szm-blue, #6B9E8C)",
-                color: "#fff",
+                backgroundColor: "#6B9E8C",
                 zIndex: 40,
+                border: "none",
+                cursor: "pointer",
               }}
+              aria-label="打开 AI 导览"
             />
           }
-        />
+        >
+          <MessageCircle size={24} color="#fff" />
+        </SheetTrigger>
         <SheetContent
           side="right"
           className="p-0 flex flex-col"
-          style={{
-            width: "100%",
-            height: "100%",
-            maxWidth: "100%",
-            borderRadius: 0,
-          }}
+          style={{ width: "100%", maxWidth: "100%", height: "100%", borderRadius: 0 }}
         >
           <div className="flex flex-col" style={{ height: "100%" }}>
             <ChatWindow />
-            <ChatInput onSend={handleSendMessage} disabled={useGuideStore((s) => s.isStreaming)} />
+            <ChatInput
+              onSend={handleSendMessage}
+              disabled={useGuideStore.getState().isStreaming}
+            />
           </div>
         </SheetContent>
       </Sheet>

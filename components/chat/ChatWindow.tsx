@@ -82,8 +82,8 @@ export function ChatWindow() {
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1" style={{ backgroundColor: "var(--szm-light, #F7F5F0)" }}>
-        <div className="flex flex-col gap-3 p-4" style={{ minHeight: "100%" }} ref={scrollRef}>
+      <ScrollArea className="flex-1" ref={scrollRef} style={{ backgroundColor: "var(--szm-light, #F7F5F0)" }}>
+        <div className="flex flex-col gap-3 p-4" style={{ minHeight: "100%" }}>
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div
