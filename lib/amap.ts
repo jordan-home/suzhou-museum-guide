@@ -28,9 +28,9 @@ function loadScript(src: string, id: string): Promise<void> {
 }
 
 // 确保 AMap 和 AMapUI 已加载
-let loadPromise: Promise<void> | null = null;
+let loadPromise: any = null;
 
-export async function loadAmap(): Promise<{ AMap: typeof AMap; AMapUI: typeof AMapUI }> {
+export async function loadAmap(): Promise<{ AMap: any; AMapUI: any }> {
   if (loadPromise) return loadPromise;
 
   loadPromise = (async () => {

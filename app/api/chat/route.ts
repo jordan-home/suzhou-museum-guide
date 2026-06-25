@@ -2,17 +2,17 @@
 // AI 对话 API（流式返回）
 
 import { NextRequest } from "next/server";
-import { createChatCompletion } from "@/lib/qwen";
+import { createChatCompletion } from "@/lib/deepseek";
 import { retrieveRelevantArtifacts, buildContextFromArtifacts } from "@/lib/rag";
 import { SYSTEM_PROMPT } from "@/prompts/system-prompt";
 
 export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.DASHSCOPE_API_KEY;
+  const apiKey = process.env.DEEPSEEK_API_KEY;
 
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "DASHSCOPE_API_KEY not configured" }), {
+    return new Response(JSON.stringify({ error: "DEEPSEEK_API_KEY not configured" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
