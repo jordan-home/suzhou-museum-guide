@@ -1,0 +1,83 @@
+/* 苏州博物馆 AI 导览 · 设计令牌 v1.0 */
+:root {
+  /* 色彩 · 苏州白墙 + 江南青瓷 + 琥珀金 */
+  --szm-white:      #FFFFFF;
+  --szm-light:      #F7F5F0;
+  --szm-gray:       #E8E4DC;
+  --szm-dark:       #2C2C2C;
+
+  --szm-blue:       #6B9E8C;
+  --szm-blue-light: #A8C5BB;
+  --szm-blue-pale:  #E8F0ED;
+
+  --szm-gold:       #B8955A;
+  --szm-gold-light: #D4B483;
+
+  --szm-success:    #5C9E6B;
+  --szm-warning:    #C4975A;
+  --szm-error:      #B85C5C;
+  --szm-ai:         #6B9E8C;
+
+  /* 字体 */
+  --szm-font-serif: 'Noto Serif SC', 'Songti SC', serif;
+  --szm-font-sans:  'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --szm-font-mono:  'DM Mono', 'Menlo', monospace;
+
+  /* 字号 */
+  --szm-text-xs:   12px;
+  --szm-text-sm:   14px;
+  --szm-text-base: 16px;
+  --szm-text-lg:   18px;
+  --szm-text-xl:   22px;
+  --szm-text-2xl:  28px;
+
+  /* 行高 */
+  --szm-leading-tight: 1.3;
+  --szm-leading-normal: 1.7;
+
+  /* 圆角 */
+  --szm-radius-sm:   4px;
+  --szm-radius-md:   8px;
+  --szm-radius-lg:   12px;
+  --szm-radius-xl:   16px;
+  --szm-radius-full: 9999px;
+
+  /* 间距（8px 基准） */
+  --szm-space-1:  4px;
+  --szm-space-2:  8px;
+  --szm-space-3:  12px;
+  --szm-space-4:  16px;
+  --szm-space-6:  24px;
+  --szm-space-8:  32px;
+  --szm-space-12: 48px;
+
+  /* 阴影 */
+  --szm-shadow-sm:  0 1px 3px rgba(44, 44, 44, 0.06);
+  --szm-shadow-md:  0 4px 12px rgba(44, 44, 44, 0.08);
+  --szm-shadow-lg:  0 8px 24px rgba(44, 44, 44, 0.10);
+
+  /* 动效 */
+  --szm-duration-fast:   150ms;
+  --szm-duration-normal: 200ms;
+  --szm-duration-slow:   300ms;
+  --szm-ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* AI 对话气泡 */
+.ai-bubble {
+  background-color: var(--szm-blue-pale);
+  color: var(--szm-dark);
+  font-size: var(--szm-text-base);
+  line-height: var(--szm-leading-normal);
+  border-radius: var(--szm-radius-xl) var(--szm-radius-lg) var(--szm-radius-lg) var(--szm-radius-sm);
+  padding: var(--szm-space-3) var(--szm-space-4);
+}
+
+.user-bubble {
+  background-color: var(--szm-gray);
+  color: var(--szm-dark);
+  font-size: var(--szm-text-base);
+  line-height: var(--szm-leading-normal);
+  border-radius: var(--szm-radius-lg) var(--szm-radius-xl) var(--szm-radius-sm) var(--szm-radius-lg);
+  padding: var(--szm-space-3) var(--szm-space-4);
+}

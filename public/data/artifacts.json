@@ -1,0 +1,193 @@
+{
+  "museum": {
+    "name": "苏州博物馆",
+    "nameEn": "Suzhou Museum",
+    "address": "苏州市姑苏区东北街204号",
+    "tel": "0512-67575666",
+    "openHours": "周二至周日 9:00-17:00（16:00停止入馆），周一闭馆",
+    "ticket": "免费，需提前预约",
+    "architect": "贝聿铭",
+    "openYear": 2006,
+    "designConcept": "中而新，苏而新",
+    "history": "馆址为太平天国忠王李秀成王府遗址",
+    "position": { "lat": 31.3235, "lng": 120.6501 }
+  },
+  "halls": [
+    { "id": "wudi", "name": "吴地遗珍", "subtitle": "苏州历史基本陈列", "floor": 1 },
+    { "id": "paintings", "name": "书画馆", "subtitle": "吴门画派与历代书画", "floor": 1 },
+    { "id": "porcelain", "name": "陶瓷馆", "subtitle": "历代陶瓷精品", "floor": 1 },
+    { "id": "handicraft", "name": "工艺品馆", "subtitle": "玉器、漆器、竹雕", "floor": 2 },
+    { "id": "twinpagodas", "name": "两塔瑰宝", "subtitle": "虎丘塔与瑞光塔出土文物", "floor": 2 }
+  ],
+  "exhibitions": [
+    {
+      "id": "jiangnan-craft",
+      "title": "江南造·蔡念群团扇艺术展",
+      "period": "2026.6.2 - 9.3",
+      "location": "现代艺术厅",
+      "description": "江南工艺主题团扇艺术展"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "yueyao-lotus-bowl",
+      "name": "越窑青瓷莲花形碗",
+      "nameEn": "Celadon lotus-flower-shaped bowl, Yue ware",
+      "era": "五代",
+      "year": "907-960",
+      "size": "13.5×13.8cm",
+      "hall": "twinpagodas",
+      "category": "porcelain",
+      "image": null,
+      "description": "1956年出土于虎丘塔。\"橄榄绿\"青瓷，越窑精品，内外刻重瓣莲花纹，底有\"相急\"铭文（制作者）。莲花象征纯洁与重生，佛教寓意深厚。",
+      "descriptionEn": "A set of precious celadon bowl was discovered in Huqiu Pagoda in 1956. Beautiful and exquisite, a truly representative piece of artwork from Yue kiln. The design is cunning and the shape is exquisite like a blooming lotus-flower. Lotus symbolizes purity and rebirth in Buddhism.",
+      "tags": ["镇馆之宝", "青瓷", "佛教文化", "莲花纹"],
+      "highlights": ["唯一\"橄榄绿\"越窑完整器", "莲花纹饰佛教寓意", "底有工匠铭文"]
+    },
+    {
+      "id": "eleven-faced-guanyin",
+      "name": "铜鎏金十一面观音立像",
+      "nameEn": "Two Bronze Eleven-faced Standing Statues of Avalokiteshvara",
+      "era": "宋",
+      "year": "960-1279",
+      "size": "高23.5cm",
+      "hall": "twinpagodas",
+      "category": "bronze",
+      "image": null,
+      "description": "一对铜鎏金十一面观音立像，菩萨着繁复璎珞，站在莲花座上。十一面象征菩萨的十种不同功德，是密教造像艺术的精品。",
+      "descriptionEn": "A pair of bronze statues of Buddha of Mercy. The Buddhas stand on lotus bases. They wear heavily suits, with different pearls and jewelry ornaments.",
+      "tags": ["佛像", "鎏金铜", "十一面观音", "密教"],
+      "highlights": ["宋代鎏金铜造像", "十一面象征十种功德", "繁复璎珞装饰"]
+    },
+    {
+      "id": "seven-sages-scroll",
+      "name": "七贤图卷",
+      "nameEn": "Scroll of Seven Bamboo Paintings",
+      "era": "元",
+      "year": "1279-1368",
+      "size": "纵1010cm×横36cm",
+      "hall": "paintings",
+      "category": "painting",
+      "image": null,
+      "description": "元代七幅墨竹图合集，又名《竹林七贤图卷》。描绘魏晋时期嵇康、阮籍、山涛、向秀、刘伶、阮咸、王戎七位名士在竹林中饮酒清谈的场景，象征高洁傲岸的名士风度。",
+      "descriptionEn": "This scroll collects seven different Chinese bamboo paintings from Yuan Dynasty. It is also called as the Seven Friends of Bamboo Forest.",
+      "tags": ["书画", "竹林七贤", "元代", "墨竹"],
+      "highlights": ["元代七幅墨竹合集", "魏晋名士IP", "中国竹文化代表"]
+    },
+    {
+      "id": "fenqing-pomegranate-zun",
+      "name": "粉青釉石榴形花瓣口尊",
+      "nameEn": "Fenqing With Flower-Petal-Shaped Rim-glazed Pomegranate-shaped Zun-vessel",
+      "era": "清雍正",
+      "year": "1723-1735",
+      "size": "高16.2cm×口径6.9cm",
+      "hall": "porcelain",
+      "category": "porcelain",
+      "image": null,
+      "description": "石榴形器身，施粉青釉，釉色明亮光滑、淡雅宜人。底书青花\"大清雍正年制\"款。雍正御窑代表之作，工艺精湛，釉色达到历史最高水平。",
+      "descriptionEn": "It has a pomegranate shape, applied with pink green glaze. The glaze is bright, smooth and elegant. A signature in the bottom is applied in underglaze blue writes \"Made in Emperor Yong Zheng's Reign Qing Dynasty\".",
+      "tags": ["雍正御窑", "粉青釉", "石榴形", "御窑精品"],
+      "highlights": ["雍正御窑代表作", "粉青釉历史最高水平", "底款青花六字篆书"]
+    },
+    {
+      "id": "eaglewood-brush-holder",
+      "name": "沉香木雕渔网笔筒",
+      "nameEn": "Eaglewood Brush Holder with Angling and Netting",
+      "era": "清",
+      "year": "1644-1911",
+      "size": null,
+      "hall": "handicraft",
+      "category": "carving",
+      "image": null,
+      "description": "随形根雕笔筒，山石、菊花、松树、人物（持竿垂钓者、收网者）浮雕。取材珍贵沉香木，构图层次丰富，场景生动，是清代木雕文房用品的精品。",
+      "descriptionEn": "The holder is designed in the shape of a natural bamboo root. Rockeries are carved around the body, while rocks, chrysanthemum, pine bushes and grass are carved in relief on the lower portions. Two human figures may be seen, one sitting alone at one end of the boat with fishing pole and bait in hand and the other bending down in shallow water attending to the fishing net.",
+      "tags": ["文房", "沉香木", "根雕", "渔耕场景"],
+      "highlights": ["珍贵沉香木材质", "渔耕场景层次丰富", "清代木雕精品"]
+    },
+    {
+      "id": "jinong-incense-tower",
+      "name": "金农《香林扫塔图轴》",
+      "nameEn": "Jinong's Scroll of Incense and Sweeping Pagoda",
+      "era": "清",
+      "year": "1687-1764",
+      "size": "内纵61.5×横28.8cm",
+      "hall": "paintings",
+      "category": "painting",
+      "image": null,
+      "description": "金农（1687-1764），\"扬州八怪\"之一，五十岁后方学画。善画山水、人物、花卉、梅竹，笔墨稚拙，别具古朴风格。此图描绘佛塔与古松，意境悠远。",
+      "descriptionEn": "Jinong (1687-1764), one of the \"Eight Eccentrics of Yangzhou\", began painting at age 50. Known for landscapes, figures, flowers, and bamboo with primitive and simple brushwork.",
+      "tags": ["书画", "扬州八怪", "金农", "佛塔"],
+      "highlights": ["扬州八怪金农真迹", "稚拙古朴画风", "佛塔古松意境"]
+    },
+    {
+      "id": "rhino-horn-cup",
+      "name": "犀角雕龙纹杯",
+      "nameEn": "Rhino Horns Cup Carved with Dragon Design",
+      "era": "明",
+      "year": "1368-1644",
+      "size": "长9.8×宽15.5×高8.9cm",
+      "hall": "handicraft",
+      "category": "carving",
+      "image": null,
+      "description": "杯身刻回纹，腹部饰饕餮纹，虎形把手。明代犀角雕重器，造型古朴庄重，纹饰精细，为宫廷造办处作品。",
+      "descriptionEn": "The cup body is carved with key pattern, the belly decorated with taotie pattern, with a tiger-shaped handle. A major Ming dynasty rhino horn carving.",
+      "tags": ["犀角", "明代", "龙纹", "宫廷"],
+      "highlights": ["明代犀角雕重器", "饕餮纹饰", "宫廷造办处"]
+    },
+    {
+      "id": "qianlong-lacquer-bowl",
+      "name": "乾隆漆雕金碗",
+      "nameEn": "Lacquer Carving and Gilded Bowl",
+      "era": "清乾隆",
+      "year": "1736-1795",
+      "size": "口径10.3×高5.3cm",
+      "hall": "handicraft",
+      "category": "lacquer",
+      "image": null,
+      "description": "外壁漆雕瓜果花卉纹，内外壁鎏金。乾隆御用金碗，漆雕工艺与鎏金技术结合，代表清代宫廷工艺最高水平。",
+      "descriptionEn": "The bowl was decorated with lacquer carvings in shapes of melon, fruit, flower and grass. The inside and the bottom are gilded.",
+      "tags": ["乾隆", "漆雕", "鎏金", "御用"],
+      "highlights": ["乾隆御用金碗", "漆雕+鎏金工艺", "宫廷最高水平"]
+    },
+    {
+      "id": "six-dynasties虎子",
+      "name": "六朝时期青瓷虎子",
+      "nameEn": "Six Dynasties Celadon Tiger-shaped Vessel",
+      "era": "六朝",
+      "year": "220-589",
+      "size": "长23.3×高17.8×口径6.3cm",
+      "hall": "porcelain",
+      "category": "porcelain",
+      "image": null,
+      "description": "圆口，作虎头形，背饰斜方格纹提梁，腹部刻双翼，四足匍匐。造型生动，是中国六朝时期青瓷的代表作品，与南京迈皋桥西晋墓出土虎子相同。",
+      "descriptionEn": "Round mouth in tiger-head shape,斜方格纹提梁 on back, double wings on belly, four feet prostrate. A representative work of Six Dynasties celadon.",
+      "tags": ["六朝", "青瓷", "虎形", "冥器"],
+      "highlights": ["六朝青瓷代表", "虎头形制独特", "与南京西晋墓出土相同"]
+    },
+    {
+      "id": "mother-pearl-sutra-case",
+      "name": "螺钿嵌宝石经箱",
+      "nameEn": "Mother-of-pearl Inlaid Sutra Case",
+      "era": "宋",
+      "year": "960-1279",
+      "size": "长34.8×宽13.7×高12.7cm",
+      "hall": "twinpagodas",
+      "category": "lacquer",
+      "image": null,
+      "description": "三层结构，箱盖三组花饰并嵌水晶，中层雕牡丹石榴花，下层雕草纹。1956年出土于虎丘塔，宋代螺钿漆器最高水平的代表作。",
+      "descriptionEn": "It is composed with three parts. The lid is decorated with three groups of flowers, and adorned with crystals. The middle part is decorated with interlocking peony and pomegranate flowers. The platform is decorated with grass pattern.",
+      "tags": ["螺钿", "宋代", "经箱", "虎丘塔"],
+      "highlights": ["宋代螺钿漆器最高水平", "三层结构嵌水晶", "虎丘塔出土"]
+    }
+  ],
+  "narrative": {
+    "title": "吴地遗珍",
+    "intro": "苏州，吴地中心，镶嵌在江南大地上的璀璨明珠。1万年前，苏州三山岛人类活动的足迹，拉开了苏州人类历史的帷幕；2500年前吴大都的建立，迈开了苏州城市文明的步伐。苏州，中国首批历史文化名城，地灵水秀，人文荟萃，历来被誉为\"鱼米之乡\"，\"文物之邦\"，\"人间天堂\"。襟湖带江，东望大海，河荡密布，地沃禾嘉，有山川之胜，富鱼稻之饶。",
+    "halls": [
+      { "id": "chen-guang-xi-wei", "name": "晨光熹微", "period": "新石器时代", "content": "马家浜文化→崧泽文化→良渚文化（数千年稻作文明）" },
+      { "id": "zheng-bo-chun-qiu", "name": "争伯春秋", "period": "春秋战国", "content": "吴国争霸、北上中原、黄池会盟、吴越争霸" },
+      { "id": "jin-xiu-jiang-nan", "name": "锦绣江南", "period": "西汉至唐宋", "content": "\"江东一都会\"、盐铜之饶、三江五湖之利" },
+      { "id": "du-hui-liu-yun", "name": "都会流韵", "period": "唐宋至明清", "content": "\"上有天堂，下有苏杭\"、\"苏湖熟，天下足\"" }
+    ]
+  }
+}

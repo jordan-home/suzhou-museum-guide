@@ -1,0 +1,123 @@
+{
+  "floors": [
+    {
+      "floor": 1,
+      "name": "一层",
+      "description": "吴地遗珍 · 书画馆 · 陶瓷馆",
+      "center": [120.6501, 31.3235],
+      "zoom": 17,
+      "bounds": {
+        "sw": [120.6480, 31.3215],
+        "ne": [120.6520, 31.3255]
+      },
+      "halls": [
+        {
+          "id": "wudi",
+          "name": "吴地遗珍",
+          "subtitle": "苏州历史基本陈列",
+          "category": "history",
+          "center": [120.6492, 31.3238],
+          "radius": 60,
+          "color": "#6B9E8C",
+          "icon": "🏛️",
+          "artifacts": ["six-dynasties-huzi"]
+        },
+        {
+          "id": "paintings",
+          "name": "书画馆",
+          "subtitle": "吴门画派与历代书画",
+          "category": "painting",
+          "center": [120.6508, 31.3242],
+          "radius": 50,
+          "color": "#8B6914",
+          "icon": "🖌️",
+          "artifacts": ["seven-sages-scroll", "jinong-incense-tower"]
+        },
+        {
+          "id": "porcelain",
+          "name": "陶瓷馆",
+          "subtitle": "历代陶瓷精品",
+          "category": "porcelain",
+          "center": [120.6495, 31.3226],
+          "radius": 55,
+          "color": "#C45C3E",
+          "icon": "🏺",
+          "artifacts": ["fenqing-pomegranate-zun"]
+        }
+      ],
+      "paths": [
+        {
+          "from": [120.6492, 31.3230],
+          "to": [120.6508, 31.3235],
+          "label": "主通道"
+        }
+      ]
+    },
+    {
+      "floor": 2,
+      "name": "二层",
+      "description": "工艺品馆 · 两塔瑰宝",
+      "center": [120.6501, 31.3235],
+      "zoom": 17,
+      "bounds": {
+        "sw": [120.6480, 31.3215],
+        "ne": [120.6520, 31.3255]
+      },
+      "halls": [
+        {
+          "id": "handicraft",
+          "name": "工艺品馆",
+          "subtitle": "玉器 · 漆器 · 竹雕 · 犀角",
+          "category": "handicraft",
+          "center": [120.6503, 31.3245],
+          "radius": 55,
+          "color": "#7B5EA7",
+          "icon": "🎨",
+          "artifacts": ["eaglewood-brush-holder", "rhino-horn-cup", "qianlong-lacquer-bowl"]
+        },
+        {
+          "id": "twinpagodas",
+          "name": "两塔瑰宝",
+          "subtitle": "虎丘塔 · 瑞光塔出土",
+          "category": "buddhist",
+          "center": [120.6495, 31.3228],
+          "radius": 60,
+          "color": "#B8860B",
+          "icon": "🗼",
+          "artifacts": ["yueyao-lotus-bowl", "eleven-faced-guanyin", "mother-pearl-sutra-case"]
+        }
+      ],
+      "paths": []
+    }
+  ],
+  "facilities": [
+    {
+      "id": "entrance",
+      "name": "主入口",
+      "position": [120.6498, 31.3220],
+      "icon": "🚪",
+      "type": "entrance"
+    },
+    {
+      "id": "service-desk",
+      "name": "服务中心",
+      "position": [120.6500, 31.3225],
+      "icon": "🛎️",
+      "type": "service"
+    },
+    {
+      "id": "souvenir",
+      "name": "文创商店",
+      "position": [120.6505, 31.3222],
+      "icon": "🎁",
+      "type": "shop"
+    },
+    {
+      "id": "café",
+      "name": "咖啡厅",
+      "position": [120.6492, 31.3222],
+      "icon": "☕",
+      "type": "cafe"
+    }
+  ]
+}
