@@ -3,13 +3,6 @@
  * 高德地图 JS API v2 初始化封装
  */
 
-declare global {
-  interface Window {
-    AMap: typeof AMap;
-    AMapUI: typeof AMapUI;
-  }
-}
-
 // 高德地图 JS API 地址（带 UI 组件库）
 export const AMAP_JS_API_URL =
   "https://webapi.amap.com/maps?v=2.0&key=" +
