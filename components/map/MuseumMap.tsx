@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FloorPlans, Hall } from "@/lib/types";
-import { PanelRight } from "lucide-react";
+
 
 // 高德地图室内地图楼层样式（模拟）
 const FLOOR_COLORS: Record<number, string> = {

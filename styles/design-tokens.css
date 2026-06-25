@@ -1,0 +1,25 @@
+/**
+ * styles/design-tokens.css
+ * 苏州博物馆主题设计 token
+ * 与 globals.css 中的 :root 覆盖保持一致
+ */
+
+:root {
+  --szm-blue: #6B9E8C;
+  --szm-blue-pale: #E8F0ED;
+  --szm-dark: #2C2C2C;
+  --szm-gray: #E8E4DC;
+  --szm-light: #F7F5F0;
+  --szm-radius-sm: 4px;
+  --szm-radius: 8px;
+  --szm-radius-lg: 12px;
+  --szm-radius-xl: 16px;
+  --szm-radius-full: 9999px;
+  --szm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --szm-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --szm-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --szm-space-3: 0.75rem;
+  --szm-space-4: 1rem;
+  --szm-text-base: 0.875rem;
+  --szm-leading-normal: 1.5;
+}
